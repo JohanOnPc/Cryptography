@@ -18,17 +18,21 @@ namespace cipher
 
 	namespace ChaCha20
 	{
-		struct state
+		class ChaCha20
 		{
 			uint32_t element[16];
 
+		public:
+
 			uint32_t& operator[](size_t x) { return element[x]; }
+
+			static void QuarterRound(uint32_t& a, uint32_t& b, uint32_t& c, uint32_t& d);
+			void InnerBlock();
+			void Block(std::byte keyStream[64], uint32_t key[8], uint32_t counter, uint32_t nonce[3]);
+			void Serialize(std::byte keyStream[64]);
+			void PrintState();
 		};
 
-		void QuarterRound(uint32_t& a, uint32_t& b, uint32_t& c, uint32_t& d);
-		void InnerBlock(state& matrix);
-		uint32_t* Block(uint32_t key[8], uint32_t counter, uint32_t nonce[3]);
-
-		void PrintState(state& matrix);
+		void PrintSerial(std::byte keyStream[64]);
 	}
 }
