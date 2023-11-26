@@ -121,3 +121,36 @@ void cipher::ChaCha20::PrintSerial(const ChaCha20& matrix)
             std::cout << '\n';
     }
 }
+
+void cipher::ChaCha20::Encrypt(std::byte key[32], uint32_t counter, std::byte nonce[12], const std::byte* plainText, std::byte* cipherText, size_t length)
+{
+    ChaCha20 matrix;
+    int i = 0;
+
+    for ( ; i < (length / 64); i++)
+    {
+        matrix.Block(reinterpret_cast<uint32_t*>(key), counter + i, reinterpret_cast<uint32_t*>(nonce));
+        std::byte* key_stream = reinterpret_cast<std::byte*>(&matrix);
+        for (int j = 0; j < 64; j++)
+            cipherText[i * 64 + j] = key_stream[j] ^ plainText[i * 64 + j];
+    }
+
+    if (length % 64 != 0)
+    {
+        matrix.Block(reinterpret_cast<uint32_t*>(key), counter + i, reinterpret_cast<uint32_t*>(nonce));
+        std::byte* key_stream = reinterpret_cast<std::byte*>(&matrix);
+        for (int j = 0; j < length % 64; j++)
+            cipherText[i * 64 + j] = key_stream[j] ^ plainText[i * 64 + j];
+    }
+}
+
+void PrintBytes(const std::byte* bytes, size_t length)
+{
+    for (int i = 0; i < length; i++)
+    {
+        std::cout << std::format("{:02x} ", (unsigned char)bytes[i]);
+
+        if ((i + 1) % 16 == 0)
+            std::cout << '\n';
+    }
+}

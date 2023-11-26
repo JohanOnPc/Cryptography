@@ -11,29 +11,23 @@ int main()
 	ciphertext = cipher::vigenère::encrypt("theydrinkthetea", "duh");
 	std::cout << ciphertext << " : " << cipher::vigenère::decrypt(ciphertext, "duh") << '\n';
 
-	uint32_t a = 0x11111111, b = 0x01020304, c = 0x9b8d6f43, d = 0x01234567;
+	uint32_t a = 0x11111111, b = 0x01020304, c = 0x9b8d6f43, d = 0x01234567;	
 
-	cipher::ChaCha20::ChaCha20::QuarterRound(a, b, c, d);
-
-	std::cout << std::hex << a << ", " << b << ", " << c << ", " << d << '\n' << std::dec;
-
-	uint32_t key[8] = { 0x00010203, 0x04050607, 0x08090a0b, 0x0c0d0e0f, 0x10111213, 0x14151617, 0x18191a1b, 0x1c1d1e1f };
+	uint32_t key[8] = { 0x03020100, 0x07060504, 0x0b0a0908, 0x0f0e0d0c, 0x13121110, 0x17161514, 0x1b1a1918, 0x1f1e1d1c };
 	uint32_t counter = 1;
-	uint32_t nonce[3] = {0x00000009, 0x0000004a, 0x00000000};
+	uint32_t nonce[3] = { 0x00000000, 0x4a000000, 0x00000000 };
 
-	for (int i = 0; i < 8; i++)
-	{
-		key[i] = std::byteswap(key[i]);
+	const char* PlainText = "Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
+	char* NewPlainText = new char[strlen(PlainText)];
+	std::byte* CipherText = new std::byte[strlen(PlainText)];
 
-		if (i < 3)
-			nonce[i] = std::byteswap(nonce[i]);
-	}
+	cipher::ChaCha20::Encrypt(reinterpret_cast<std::byte*>(key), counter, reinterpret_cast<std::byte*>(nonce), reinterpret_cast<const std::byte*>(PlainText), CipherText, strlen(PlainText) + 1);
 
-	cipher::ChaCha20::ChaCha20 matrix;
+	PrintBytes(CipherText, strlen(PlainText));
 
-	matrix.Block(key, counter, nonce);
+	cipher::ChaCha20::Encrypt(reinterpret_cast<std::byte*>(key), counter, reinterpret_cast<std::byte*>(nonce), CipherText, reinterpret_cast<std::byte*>(NewPlainText), strlen(PlainText) + 1);
 
-	cipher::ChaCha20::PrintSerial(matrix);
+	std::cout << '\n' << NewPlainText << '\n';
 
 	return 0;
 }

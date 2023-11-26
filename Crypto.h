@@ -30,8 +30,12 @@ namespace cipher
 			void InnerBlock();
 			void Block(uint32_t key[8], uint32_t counter, uint32_t nonce[3]);
 			void PrintState();
+
 		};
 
 		void PrintSerial(const ChaCha20& matrix);
+		void Encrypt(std::byte key[32], uint32_t counter, std::byte nonce[12], const std::byte* plainText, std::byte* cipherText, size_t length);
 	}
 }
+
+void PrintBytes(const std::byte* bytes, size_t length);
