@@ -21,8 +21,6 @@ int main()
 	uint32_t counter = 1;
 	uint32_t nonce[3] = {0x00000009, 0x0000004a, 0x00000000};
 
-	std::byte key_stream[64];
-
 	for (int i = 0; i < 8; i++)
 	{
 		key[i] = std::byteswap(key[i]);
@@ -33,9 +31,9 @@ int main()
 
 	cipher::ChaCha20::ChaCha20 matrix;
 
-	matrix.Block(key_stream, key, counter, nonce);
+	matrix.Block(key, counter, nonce);
 
-	//cipher::ChaCha20::PrintSerial(key_stream);
+	cipher::ChaCha20::PrintSerial(matrix);
 
 	return 0;
 }

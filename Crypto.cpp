@@ -79,7 +79,7 @@ void cipher::ChaCha20::ChaCha20::InnerBlock()
     QuarterRound(element[3], element[4], element[9], element[14]);
 }
 
-void cipher::ChaCha20::ChaCha20::Block(std::byte keyStream[64], uint32_t key[8], uint32_t counter, uint32_t nonce[3])
+void cipher::ChaCha20::ChaCha20::Block(uint32_t key[8], uint32_t counter, uint32_t nonce[3])
 {
     class ChaCha20 workingState;
     element[0] = 0x61707865; element[1] = 0x3320646e; element[2] = 0x79622d32; element[3] = 0x6b206574;
@@ -102,21 +102,6 @@ void cipher::ChaCha20::ChaCha20::Block(std::byte keyStream[64], uint32_t key[8],
         element[i] += workingState[i];
 
     PrintState();
-
-    Serialize(keyStream);
-}
-
-void cipher::ChaCha20::ChaCha20::Serialize(std::byte keyStream[64])
-{
-    uint32_t block;
-    for (int i = 0; i < 16; i++)
-    {
-        block = element[i];
-        keyStream[i * 4] = static_cast<std::byte>(block & 0xff);
-        keyStream[i * 4 + 1] = static_cast<std::byte>(block >> 8 & 0xff);
-        keyStream[i * 4 + 2] = static_cast<std::byte>(block >> 16 & 0xff);
-        keyStream[i * 4 + 3] = static_cast<std::byte>(block >> 24 & 0xff);
-    }
 }
 
 void cipher::ChaCha20::ChaCha20::PrintState()
@@ -126,7 +111,13 @@ void cipher::ChaCha20::ChaCha20::PrintState()
         element[8], element[9], element[10], element[11], element[12], element[13], element[14], element[15]);
 }
 
-void cipher::ChaCha20::PrintSerial(std::byte key[64])
+void cipher::ChaCha20::PrintSerial(const ChaCha20& matrix)
 {
-    //''std::cout << std::format("{:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} {:02x} \n")
+    const std::byte* key_stream = reinterpret_cast<const std::byte*>(&matrix);
+    for (int i = 0; i < 64; i++)
+    {
+        std::cout << std::format("{:02x} ", (unsigned char)key_stream[i]);
+        if ((i + 1) % 16 == 0)
+            std::cout << '\n';
+    }
 }

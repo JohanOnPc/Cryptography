@@ -28,11 +28,10 @@ namespace cipher
 
 			static void QuarterRound(uint32_t& a, uint32_t& b, uint32_t& c, uint32_t& d);
 			void InnerBlock();
-			void Block(std::byte keyStream[64], uint32_t key[8], uint32_t counter, uint32_t nonce[3]);
-			void Serialize(std::byte keyStream[64]);
+			void Block(uint32_t key[8], uint32_t counter, uint32_t nonce[3]);
 			void PrintState();
 		};
 
-		void PrintSerial(std::byte keyStream[64]);
+		void PrintSerial(const ChaCha20& matrix);
 	}
 }
