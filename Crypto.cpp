@@ -96,8 +96,6 @@ void cipher::ChaCha20::ChaCha20::Block(uint32_t key[8], uint32_t counter, uint32
     for (int i = 0; i < 10; i++)
         InnerBlock();
 
-    PrintState();
-
     for (int i = 0; i < 16; i++)
         element[i] += workingState[i];
 
@@ -120,6 +118,8 @@ void cipher::ChaCha20::PrintSerial(const ChaCha20& matrix)
         if ((i + 1) % 16 == 0)
             std::cout << '\n';
     }
+
+    std::cout << '\n';
 }
 
 void cipher::ChaCha20::Encrypt(std::byte key[32], uint32_t counter, std::byte nonce[12], const std::byte* plainText, std::byte* cipherText, size_t length)
@@ -152,5 +152,40 @@ void PrintBytes(const std::byte* bytes, size_t length)
 
         if ((i + 1) % 16 == 0)
             std::cout << '\n';
+    }
+
+    std::cout << "\n\n";
+}
+
+void cipher::poly1305::Sign(std::byte key[32], const std::byte* message, size_t length, std::byte tag[16])
+{
+    std::byte* r = key;
+    std::byte* s = &key[16];
+    std::byte acc[17] = {}, block[17];
+    int i = 0;
+
+    r[3] &= std::byte{ 0x0f }; r[7] &= std::byte{ 0x0f }; r[11] &= std::byte{ 0x0f }; r[15] &= std::byte{ 0x0f };
+    r[4] &= std::byte{ 0xfc }; r[8] &= std::byte{ 0xfc }; r[12] &= std::byte{ 0xfc };
+
+    for ( ; i < length / 16; i++)
+    {
+        for (int j = 0; j < 16; j++)
+            block[i] = message[i * 16 + j];
+        block[16] = std::byte{ 1 };
+
+        uint64_t* blockLarge = reinterpret_cast<uint64_t*>(block);
+        uint64_t* accLarge = reinterpret_cast<uint64_t*>(acc);
+        unsigned char blockLast = std::to_integer<unsigned char>(block[16]);
+        unsigned char accLast = std::to_integer<unsigned char>(acc[16]);
+
+        blockLarge[0] = std::byteswap(blockLarge[0]);
+        blockLarge[1] = std::byteswap(blockLarge[1]);
+
+        accLarge[0] = std::byteswap(accLarge[0]);
+        accLarge[1] = std::byteswap(accLarge[1]);
+
+        accLarge[0] += blockLarge[0];
+        accLarge[1] += blockLarge[1] + (accLarge[0] < blockLarge[0] || accLarge[0] < (accLarge[0] - blockLarge[0]));
+        accLast += blockLast + (accLarge[1] < blockLarge[1] || accLarge[1] < (accLarge[1] - blockLarge[1]));
     }
 }

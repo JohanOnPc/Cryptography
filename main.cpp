@@ -27,7 +27,7 @@ int main()
 
 	cipher::ChaCha20::Encrypt(reinterpret_cast<std::byte*>(key), counter, reinterpret_cast<std::byte*>(nonce), CipherText, reinterpret_cast<std::byte*>(NewPlainText), strlen(PlainText) + 1);
 
-	std::cout << '\n' << NewPlainText << '\n';
+	std::cout << NewPlainText << '\n';
 
 	return 0;
 }

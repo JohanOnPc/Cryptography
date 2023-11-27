@@ -129,11 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cipher.cpp" />
+    <ClCompile Include="BigInt.cpp" />
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BigInt.h" />
     <ClInclude Include="Crypto.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

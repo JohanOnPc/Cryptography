@@ -36,6 +36,11 @@ namespace cipher
 		void PrintSerial(const ChaCha20& matrix);
 		void Encrypt(std::byte key[32], uint32_t counter, std::byte nonce[12], const std::byte* plainText, std::byte* cipherText, size_t length);
 	}
+
+	namespace poly1305
+	{
+		void Sign(std::byte key[32], const std::byte* message, size_t length, std::byte tag[16]);
+	}
 }
 
 void PrintBytes(const std::byte* bytes, size_t length);
