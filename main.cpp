@@ -2,6 +2,9 @@
 #include <bit>
 
 #include "Crypto.h"
+#include "BigInt.h"
+
+void TestBigInt();
 
 int main()
 {
@@ -29,5 +32,14 @@ int main()
 
 	std::cout << NewPlainText << '\n';
 
+	TestBigInt();
+
 	return 0;
+}
+
+void TestBigInt()
+{
+	uint128 a{ 346545653247653425 }, b{ 2534524424233 };
+	uint128 c = Multiply(a, b);
+	
 }
