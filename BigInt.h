@@ -48,9 +48,7 @@ public:
 	friend uint128 operator>> (const uint128 a, size_t b);
 	friend uint128 operator<< (const uint128 a, size_t b);
 
-
-
-
+	friend std::ostream& operator<< (std::ostream& os, const uint128 a);
 };
 
 class uint256
